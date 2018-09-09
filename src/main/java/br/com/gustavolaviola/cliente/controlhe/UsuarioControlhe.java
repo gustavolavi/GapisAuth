@@ -24,14 +24,7 @@ public class UsuarioControlhe {
 	private UsuarioRepositorio usuarioRepositorio;
 	
 	@GetMapping()
-	@PreAuthorize("hasRole('USER')")
 	public List<Usuario> get() {
 		return (List<Usuario>) usuarioRepositorio.findAll();
-	}
-	
-	@GetMapping("/user")
-	@PreAuthorize("hasRole('ADMIN')")
-	public UserDetails usuarioLogado(@AuthenticationPrincipal UserDetails principal) {
-		return principal;
 	}
 }

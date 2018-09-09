@@ -1,8 +1,10 @@
 package br.com.gustavolaviola.cliente.config;
 
+import static br.com.gustavolaviola.cliente.config.SegurancaConstantes.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,19 +24,31 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	private UsuarioAuthenticacaoServicos usuarioAuthenticacaoServicos;
 	
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//		http
+//			.authorizeRequests()
+//				.anyRequest().authenticated()
+//			.and()
+//			 	.sessionManagement()
+//             	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//             .and()
+//             	.httpBasic()
+//             .and()
+//             	.csrf()
+//             	.disable();
+//		
+//	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests()
-				.anyRequest().authenticated()
-			.and()
-			 	.sessionManagement()
-             	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-             .and()
-             	.httpBasic()
-             .and()
-             	.csrf()
-             	.disable();
+		http.cors().and().csrf().disable().authorizeRequests()
+		.antMatchers(HttpMethod.GET,SING_UP_URL).permitAll()
+		.antMatchers("/usuario/**").hasRole("USER")
+		.antMatchers("/permissao/**").hasRole("ADMIN")
+		.and()
+		.addFilter(new JWTAtuhenticationFilter(authenticationManager()))
+		.addFilter(new JWTAuthorizationFilter(authenticationManager(), usuarioAuthenticacaoServicos));
 		
 	}
 	

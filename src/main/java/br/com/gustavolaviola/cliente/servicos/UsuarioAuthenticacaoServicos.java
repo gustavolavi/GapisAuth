@@ -28,29 +28,29 @@ public class UsuarioAuthenticacaoServicos implements UserDetailsService {
 
 	private final UsuarioRepositorio usuarioRepositorio;
 	private final PermissaoRepositorio permissaoRepositorio;
+
 	@Autowired
-	public UsuarioAuthenticacaoServicos(UsuarioRepositorio usuarioRepositorio,PermissaoRepositorio permissaoRepositorio) {
+	public UsuarioAuthenticacaoServicos(UsuarioRepositorio usuarioRepositorio,
+			PermissaoRepositorio permissaoRepositorio) {
 		this.usuarioRepositorio = usuarioRepositorio;
 		this.permissaoRepositorio = permissaoRepositorio;
 	}
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
 		Usuario usuario = usuarioRepositorio.findByLogin(login);
-		
+
 		System.out.println(usuario.getNome());
-		
-		
+
 		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-		grantedAuthorities.addAll(permissaoRepositorio.getPermicaoPorUsuairo(login).stream().map(role->{
-			return new SimpleGrantedAuthority("ROLE_"+role.getNome());
+		grantedAuthorities.addAll(permissaoRepositorio.getPermicaoPorUsuairo(login).stream().map(role -> {
+			return new SimpleGrantedAuthority("ROLE_" + role.getNome());
 		}).collect(Collectors.toList()));
 
-		grantedAuthorities.addAll(permissaoRepositorio.getPermissaoPorGrupoDoUduario(login).stream().map(role->{
-			return new SimpleGrantedAuthority("ROLE_"+role.getNome());
+		grantedAuthorities.addAll(permissaoRepositorio.getPermissaoPorGrupoDoUduario(login).stream().map(role -> {
+			return new SimpleGrantedAuthority("ROLE_" + role.getNome());
 		}).collect(Collectors.toList()));
-
 
 		UserDetails user = new org.springframework.security.core.userdetails.User(usuario.getLogin(),
 				usuario.getSenha(), grantedAuthorities);
