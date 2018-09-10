@@ -23,22 +23,6 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private UsuarioAuthenticacaoServicos usuarioAuthenticacaoServicos;
-	
-//	@Override
-//	protected void configure(HttpSecurity http) throws Exception {
-//		http
-//			.authorizeRequests()
-//				.anyRequest().authenticated()
-//			.and()
-//			 	.sessionManagement()
-//             	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//             .and()
-//             	.httpBasic()
-//             .and()
-//             	.csrf()
-//             	.disable();
-//		
-//	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -46,6 +30,9 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter{
 		.antMatchers(HttpMethod.GET,SING_UP_URL).permitAll()
 		.antMatchers("/usuario/**").hasRole("USER")
 		.antMatchers("/permissao/**").hasRole("ADMIN")
+		.and()
+	 	.sessionManagement()
+     	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
 		.addFilter(new JWTAtuhenticationFilter(authenticationManager()))
 		.addFilter(new JWTAuthorizationFilter(authenticationManager(), usuarioAuthenticacaoServicos));
