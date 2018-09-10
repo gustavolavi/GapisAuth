@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.persistence.*;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 public class Usuario{
@@ -27,12 +28,19 @@ public class Usuario{
 	}
 
 	public Usuario(String nome, String login, String senha, boolean ativo) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String hashedPassword = passwordEncoder.encode(senha);
+		
 		this.nome = nome;
 		this.login = login;
-		this.senha = senha;
+		this.senha = hashedPassword;
 		this.ativo = ativo;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -61,4 +69,24 @@ public class Usuario{
 		return ativo;
 	}
 
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public void setSenha(String senha) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String hashedPassword = passwordEncoder.encode(senha);
+		
+		this.senha = hashedPassword;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	public void setPermissoes(Collection<Permissao> permissoes) {
+		this.permissoes = permissoes;
+	}
+
+	
 }
